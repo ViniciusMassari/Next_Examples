@@ -6,10 +6,16 @@ const API_KEY: string | undefined = process.env.DATA_API_KEY
 
 const DATA_SOURCE_URL = 'https://jsonplaceholder.typicode.com/todos'
 
-export async function GET(){
+export async function GET(request: Request){
+    const origin = request.headers.get('origin')
     const todos = await fetch(DATA_SOURCE_URL);
     const todosJson: Todo[] = await todos.json();
-    return NextResponse.json(todosJson);
+    return new NextResponse(JSON.stringify(todosJson),{
+        headers:{
+            'Access-Control-Allow-Origin': origin || '*',
+            'Content-Type': 'application/json'
+        }
+    })
 }
 
 export async function DELETE(request: Request){
